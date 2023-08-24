@@ -3,6 +3,7 @@ import { Center, Heading, Image, Text, VStack } from 'native-base'
 
 import backgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
+import { Button } from '@components/Button'
 
 interface SignInProps {}
 
@@ -33,15 +34,16 @@ export function SignIn(props: SignInProps) {
           Acesse sua conta
         </Heading>
 
-        <VStack flex={1} w={'100%'} space={4}>
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+        <Input
+          placeholder="E-mail"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          mb={4}
+        />
 
-          <Input placeholder="Senha" secureTextEntry />
-        </VStack>
+        <Input placeholder="Senha" secureTextEntry mb={4} />
+
+        <Button title="Acessar" />
       </Center>
     </VStack>
   )
