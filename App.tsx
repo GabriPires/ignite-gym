@@ -1,3 +1,4 @@
+import { Loading } from '@components/Loading'
 import {
   Roboto_400Regular,
   Roboto_700Bold,
@@ -26,7 +27,7 @@ export default function App() {
           backgroundColor="transparent"
           translucent
         />
-        {fontsLoaded ? <View /> : <View />}
+        {!fontsLoaded ? <View /> : <Loading />}
       </View>
     </NativeBaseProvider>
   )
