@@ -6,6 +6,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import { NativeBaseProvider } from 'native-base'
 import { StatusBar, View } from 'react-native'
+import { theme } from './src/theme'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -14,21 +15,13 @@ export default function App() {
   })
 
   return (
-    <NativeBaseProvider>
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: '#202020',
-        }}
-      >
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
-        {!fontsLoaded ? <View /> : <Loading />}
-      </View>
+    <NativeBaseProvider theme={theme}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <View /> : <Loading />}
     </NativeBaseProvider>
   )
 }
