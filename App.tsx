@@ -3,7 +3,8 @@ import {
   Roboto_700Bold,
   useFonts,
 } from '@expo-google-fonts/roboto'
-import { StatusBar, Text, View } from 'react-native'
+import { NativeBaseProvider } from 'native-base'
+import { StatusBar, View } from 'react-native'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -12,19 +13,21 @@ export default function App() {
   })
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: '#202020',
-      }}
-    >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
-      {fontsLoaded ? <Text>Hello world</Text> : <View />}
-    </View>
+    <NativeBaseProvider>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: '#202020',
+        }}
+      >
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        {fontsLoaded ? <View /> : <View />}
+      </View>
+    </NativeBaseProvider>
   )
 }
