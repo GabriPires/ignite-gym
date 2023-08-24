@@ -1,6 +1,7 @@
-import { extendTheme } from 'native-base'
+import { extendTheme, ITheme } from 'native-base'
+import { ButtonTheme } from './Button.theme'
 
-export const theme = extendTheme({
+export const theme: ITheme = extendTheme({
   colors: {
     green: {
       500: '#00B37E',
@@ -34,5 +35,8 @@ export const theme = extendTheme({
   sizes: {
     14: 56,
     33: 148,
+  },
+  components: {
+    Button: ButtonTheme,
   },
 })

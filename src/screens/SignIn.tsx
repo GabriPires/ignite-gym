@@ -45,6 +45,8 @@ export function SignIn(props: SignInProps) {
 
         <Button title="Acessar" />
       </Center>
+
+      <Button title="Criar conta" variant={'outline'} />
     </VStack>
   )
 }
