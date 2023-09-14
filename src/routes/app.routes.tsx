@@ -23,7 +23,8 @@ export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 const { Screen, Navigator } = createBottomTabNavigator<AppRoutes>()
 
 export function AppRoutes() {
-  const { sizes } = useTheme()
+  const { sizes, colors } = useTheme()
+
   const iconSize = sizes[6]
 
   return (
@@ -31,6 +32,8 @@ export function AppRoutes() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarActiveTintColor: colors.green[500],
+        tabBarInactiveTintColor: colors.gray[200],
       }}
     >
       <Screen
