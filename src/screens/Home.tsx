@@ -6,6 +6,15 @@ import { useState } from 'react'
 
 export function Home() {
   const [groupSelected, setGroupSelected] = useState('costas')
+  const [exercises, setExercises] = useState([
+    'Remada unilateral',
+    'Remada curvada',
+    'Remada cavalinho',
+    'Remada na polia',
+    'Remada na polia alta',
+    'Remada na polia baixa',
+    'Remada na polia com triângulo',
+  ])
   const [groups, setGroups] = useState([
     'costas',
     'ombro',
@@ -45,12 +54,19 @@ export function Home() {
           </Heading>
 
           <Text color="gray.200" fontSize="sm">
-            4
+            {exercises.length}
           </Text>
         </HStack>
 
-        <ExerciseCard />
-        <ExerciseCard />
+        <FlatList
+          data={exercises}
+          keyExtractor={(item) => item}
+          showsVerticalScrollIndicator={false}
+          _contentContainerStyle={{
+            paddingBottom: 20,
+          }}
+          renderItem={({ item }) => <ExerciseCard />}
+        />
       </VStack>
     </VStack>
   )
