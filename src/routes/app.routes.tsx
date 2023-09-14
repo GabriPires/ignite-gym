@@ -16,7 +16,7 @@ type AppRoutes = {
 
 export type AppNavigatorRoutesProps = BottomTabNavigationProp<AppRoutes>
 
-const { Screen, Navigator } = createBottomTabNavigator()
+const { Screen, Navigator } = createBottomTabNavigator<AppRoutes>()
 
 export function AppRoutes() {
   return (
