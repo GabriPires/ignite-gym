@@ -1,13 +1,15 @@
-import { Input } from '@components/Input'
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
-
 import backgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Button } from '@components/Button'
+import { Input } from '@components/Input'
+import { useNavigation } from '@react-navigation/native'
+import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
 
 interface SignUpProps {}
 
 export function SignUp(props: SignUpProps) {
+  const navigation = useNavigation()
+
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
@@ -52,7 +54,12 @@ export function SignUp(props: SignUpProps) {
           <Button title="Criar e acessar" />
         </Center>
 
-        <Button title="Voltar para o login" variant={'outline'} mt={24} />
+        <Button
+          title="Voltar para o login"
+          variant={'outline'}
+          mt={24}
+          onPress={() => navigation.goBack()}
+        />
       </VStack>
     </ScrollView>
   )
