@@ -23,6 +23,7 @@ export function SignIn(props: SignInProps) {
       <VStack flex={1} px={10} pb={16}>
         <Image
           source={backgroundImage}
+          defaultSource={backgroundImage}
           alt="Imagem com pessoas treinando"
           resizeMode="contain"
           position="absolute"
