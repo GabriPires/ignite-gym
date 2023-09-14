@@ -4,7 +4,7 @@ import {
   Roboto_700Bold,
   useFonts,
 } from '@expo-google-fonts/roboto'
-import { SignIn } from '@screens/SignIn'
+import { SignUp } from '@screens/SignUp'
 import { NativeBaseProvider } from 'native-base'
 import { StatusBar } from 'react-native'
 import { theme } from './src/theme'
@@ -22,7 +22,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      {fontsLoaded ? <SignUp /> : <Loading />}
     </NativeBaseProvider>
   )
 }
