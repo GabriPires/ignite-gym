@@ -2,10 +2,11 @@ import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
+import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { Center, Heading, Skeleton, Text, VStack } from 'native-base'
 import { useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
 
 const photoSize = 33
 
@@ -29,9 +30,17 @@ export function Profile() {
 
       if (selectedPhoto.canceled) return
 
-      if (!selectedPhoto.assets) return
+      if (selectedPhoto.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(
+          selectedPhoto.assets[0].uri,
+        )
 
-      setUserPhoto(selectedPhoto.assets[0].uri)
+        if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5) {
+          return Alert.alert('A imagem deve ter no máximo 5MB')
+        }
+
+        setUserPhoto(selectedPhoto.assets[0].uri)
+      }
     } catch (error) {
       console.log(error)
     } finally {
