@@ -38,6 +38,7 @@ export function Home() {
         }}
         my={10}
         maxH={10}
+        minH={10}
         renderItem={({ item }) => (
           <Group
             name={item}

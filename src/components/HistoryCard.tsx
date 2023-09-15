@@ -14,8 +14,13 @@ export function HistoryCard(props: HistoryCardProps) {
       alignItems="center"
       justifyContent="space-between"
     >
-      <VStack mr={5}>
-        <Heading color="white" fontSize="md" textTransform="capitalize">
+      <VStack mr={5} flex={1}>
+        <Heading
+          color="white"
+          fontSize="md"
+          textTransform="capitalize"
+          noOfLines={2}
+        >
           Costas
         </Heading>
         <Text color="gray.100" fontSize="lg" noOfLines={1}>
