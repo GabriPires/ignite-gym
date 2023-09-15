@@ -4,9 +4,9 @@ import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
-import { Center, Heading, Skeleton, Text, VStack } from 'native-base'
+import { Center, Heading, Skeleton, Text, VStack, useToast } from 'native-base'
 import { useState } from 'react'
-import { Alert, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 const photoSize = 33
 
@@ -15,6 +15,8 @@ export function Profile() {
   const [userPhoto, setUserPhoto] = useState(
     'https://github.com/GabriPires.png',
   )
+
+  const { show } = useToast()
 
   async function handleSelectUserPhoto() {
     setPhotoIsLoading(true)
@@ -36,7 +38,11 @@ export function Profile() {
         )
 
         if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5) {
-          return Alert.alert('A imagem deve ter no máximo 5MB')
+          return show({
+            title: 'A imagem deve ter no máximo 5MB',
+            bgColor: 'red.500',
+            placement: 'top',
+          })
         }
 
         setUserPhoto(selectedPhoto.assets[0].uri)
