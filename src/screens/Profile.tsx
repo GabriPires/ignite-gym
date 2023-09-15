@@ -16,21 +16,27 @@ export function Profile() {
   )
 
   async function handleSelectUserPhoto() {
-    const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      aspect: [4, 4],
-      allowsEditing: true,
-      selectionLimit: 1,
-    })
-
-    if (selectedPhoto.canceled) return
-
     setPhotoIsLoading(true)
 
-    setUserPhoto(selectedPhoto.assets[0].uri)
+    try {
+      const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+        selectionLimit: 1,
+      })
 
-    setPhotoIsLoading(false)
+      if (selectedPhoto.canceled) return
+
+      if (!selectedPhoto.assets) return
+
+      setUserPhoto(selectedPhoto.assets[0].uri)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setPhotoIsLoading(false)
+    }
   }
 
   return (
