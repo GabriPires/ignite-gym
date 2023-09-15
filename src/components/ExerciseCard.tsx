@@ -1,12 +1,20 @@
 import { Entypo } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { HStack, Heading, Icon, Image, Text, VStack } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
 interface ExerciseCardProps extends TouchableOpacityProps {}
 
 export function ExerciseCard({ ...props }: ExerciseCardProps) {
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  function handleNavigateToExerciseDetails() {
+    navigation.navigate('exercise')
+  }
+
   return (
-    <TouchableOpacity {...props}>
+    <TouchableOpacity onPress={handleNavigateToExerciseDetails} {...props}>
       <HStack
         bg="gray.500"
         alignItems="center"
