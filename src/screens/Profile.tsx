@@ -2,6 +2,7 @@ import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
+import * as ImagePicker from 'expo-image-picker'
 import { Center, Heading, Skeleton, Text, VStack } from 'native-base'
 import { useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
@@ -10,6 +11,27 @@ const photoSize = 33
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
+  const [userPhoto, setUserPhoto] = useState(
+    'https://github.com/GabriPires.png',
+  )
+
+  async function handleSelectUserPhoto() {
+    const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      aspect: [4, 4],
+      allowsEditing: true,
+      selectionLimit: 1,
+    })
+
+    if (selectedPhoto.canceled) return
+
+    setPhotoIsLoading(true)
+
+    setUserPhoto(selectedPhoto.assets[0].uri)
+
+    setPhotoIsLoading(false)
+  }
 
   return (
     <VStack flex={1}>
@@ -27,13 +49,13 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: 'https://github.com/GabriPires.png' }}
+              source={{ uri: userPhoto }}
               alt="Foto do usuário"
               size={photoSize}
             />
           )}
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleSelectUserPhoto}>
             <Text
               color="green.500"
               fontWeight="bold"
