@@ -5,8 +5,10 @@ import { Input } from '@components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
 import { api } from '@services/api'
+import axios from 'axios'
 import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
 import { Controller, useForm } from 'react-hook-form'
+import { Alert } from 'react-native'
 import { z } from 'zod'
 
 const signUpSchema = z
@@ -46,14 +48,20 @@ export function SignUp() {
   })
 
   async function handleSignUp({ name, email, password }: SignUpSchemaType) {
-    const response = await api.post('/users', {
-      name,
-      email,
-      password,
-    })
+    try {
+      const response = await api.post('/users', {
+        name,
+        email,
+        password,
+      })
 
-    const data = await response.data
-    console.log(data)
+      const data = await response.data
+      console.log(data)
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        Alert.alert('Erro', error.response?.data.message)
+      }
+    }
   }
 
   return (
