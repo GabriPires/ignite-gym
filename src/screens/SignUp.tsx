@@ -4,6 +4,7 @@ import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
+import { api } from '@services/api'
 import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -45,20 +46,13 @@ export function SignUp() {
   })
 
   async function handleSignUp({ name, email, password }: SignUpSchemaType) {
-    const response = await fetch(`http://192.168.15.24:3333/users`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
+    const response = await api.post('/users', {
+      name,
+      email,
+      password,
     })
 
-    const data = await response.json()
+    const data = await response.data
     console.log(data)
   }
 
