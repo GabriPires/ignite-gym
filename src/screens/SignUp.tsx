@@ -11,7 +11,7 @@ import { z } from 'zod'
 const signUpSchema = z
   .object({
     name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
-    email: z.string().email('E-mail inválido'),
+    email: z.string().min(1, 'E-mail inválido').email('E-mail inválido'),
     password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
     confirmPassword: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
   })
@@ -30,8 +30,18 @@ type SignUpSchemaType = z.infer<typeof signUpSchema>
 export function SignUp() {
   const navigation = useNavigation()
 
-  const { control, handleSubmit } = useForm<SignUpSchemaType>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   })
 
   function handleSignUp(data: SignUpSchemaType) {
@@ -75,8 +85,8 @@ export function SignUp() {
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder="Nome"
-                mb={4}
                 value={value}
+                errorMessage={errors.name?.message}
                 onChangeText={onChange}
               />
             )}
@@ -90,8 +100,8 @@ export function SignUp() {
                 placeholder="E-mail"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                mb={4}
                 value={value}
+                errorMessage={errors.email?.message}
                 onChangeText={onChange}
               />
             )}
@@ -104,8 +114,8 @@ export function SignUp() {
               <Input
                 placeholder="Senha"
                 secureTextEntry
-                mb={4}
                 value={value}
+                errorMessage={errors.password?.message}
                 onChangeText={onChange}
               />
             )}
@@ -118,12 +128,18 @@ export function SignUp() {
               <Input
                 placeholder="Confirme a senha"
                 secureTextEntry
-                mb={4}
                 value={value}
+                errorMessage={errors.confirmPassword?.message}
                 onChangeText={onChange}
               />
             )}
           />
+
+          {errors.confirmPassword?.message && (
+            <Text color="white" mb={2}>
+              {errors.confirmPassword.message}
+            </Text>
+          )}
 
           <Button
             title="Criar e acessar"
