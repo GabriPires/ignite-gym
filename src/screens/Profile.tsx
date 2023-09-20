@@ -92,6 +92,7 @@ export function Profile() {
           <Input placeholder="E-mail" bg="gray.600" isDisabled />
 
           <Heading
+            fontFamily={'heading'}
             color="gray.200"
             fontSize="md"
             mt={12}

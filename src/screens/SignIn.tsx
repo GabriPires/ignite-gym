@@ -36,10 +36,10 @@ export function SignIn() {
 
         <Center>
           <Heading
+            fontFamily={'heading'}
             color={'gray.100'}
             fontSize={'xl'}
             mb={6}
-            fontFamily={'heading'}
           >
             Acesse sua conta
           </Heading>
