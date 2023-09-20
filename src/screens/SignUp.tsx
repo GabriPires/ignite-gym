@@ -5,9 +5,7 @@ import { Input } from '@components/Input'
 import { useNavigation } from '@react-navigation/native'
 import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
 
-interface SignUpProps {}
-
-export function SignUp(props: SignUpProps) {
+export function SignUp() {
   const navigation = useNavigation()
 
   return (

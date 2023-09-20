@@ -1,0 +1,6 @@
+{
+  "extends": ["@gabpires/eslint-config/react"],
+  "rules": {
+    "camelcase": "off"
+  }
+}

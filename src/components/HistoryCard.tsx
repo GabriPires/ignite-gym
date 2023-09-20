@@ -1,8 +1,6 @@
 import { HStack, Heading, Text, VStack } from 'native-base'
 
-interface HistoryCardProps {}
-
-export function HistoryCard(props: HistoryCardProps) {
+export function HistoryCard() {
   return (
     <HStack
       w="full"

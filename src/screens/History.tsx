@@ -9,7 +9,7 @@ type Exercise = {
 }
 
 export function History() {
-  const [exercises, setExercises] = useState<Exercise[]>([
+  const [exercises] = useState<Exercise[]>([
     {
       data: ['Puxada frontal', 'Remada curvada'],
       title: '26.08.2023',
@@ -28,7 +28,7 @@ export function History() {
         sections={exercises}
         keyExtractor={(item) => item}
         px={8}
-        renderItem={({ item }) => <HistoryCard />}
+        renderItem={() => <HistoryCard />}
         renderSectionHeader={({ section: { title } }) => (
           <Heading color="gray.200" fontSize="md" mt={10} mb={3}>
             {title}

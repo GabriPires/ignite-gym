@@ -6,9 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
 
-interface SignInProps {}
-
-export function SignIn(props: SignInProps) {
+export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
   const handleNewAccount = () => {

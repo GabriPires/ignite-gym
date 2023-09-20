@@ -9,6 +9,7 @@ export function UserPhoto({ size, ...props }: UserPhotoProps) {
     <Image
       w={size}
       h={size}
+      alt="Foto do usuário"
       rounded="full"
       borderWidth={2}
       borderColor="gray.400"

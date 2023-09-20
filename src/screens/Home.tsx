@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 export function Home() {
   const [groupSelected, setGroupSelected] = useState('costas')
-  const [exercises, setExercises] = useState([
+  const [exercises] = useState([
     'Remada unilateral',
     'Remada curvada',
     'Remada cavalinho',
@@ -15,7 +15,7 @@ export function Home() {
     'Remada na polia baixa',
     'Remada na polia com triângulo',
   ])
-  const [groups, setGroups] = useState([
+  const [groups] = useState([
     'costas',
     'ombro',
     'peito',
@@ -66,7 +66,7 @@ export function Home() {
           _contentContainerStyle={{
             paddingBottom: 20,
           }}
-          renderItem={({ item }) => <ExerciseCard />}
+          renderItem={() => <ExerciseCard />}
         />
       </VStack>
     </VStack>

@@ -4,7 +4,7 @@ import { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { HStack, Heading, Icon, Image, Text, VStack } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 
-interface ExerciseCardProps extends TouchableOpacityProps {}
+type ExerciseCardProps = TouchableOpacityProps
 
 export function ExerciseCard({ ...props }: ExerciseCardProps) {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
