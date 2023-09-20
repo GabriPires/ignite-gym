@@ -5,10 +5,17 @@ import { Input } from '@components/Input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
 import { api } from '@services/api'
-import axios from 'axios'
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
+import { AppError } from '@utils/AppError'
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  VStack,
+  useToast,
+} from 'native-base'
 import { Controller, useForm } from 'react-hook-form'
-import { Alert } from 'react-native'
 import { z } from 'zod'
 
 const signUpSchema = z
@@ -32,6 +39,7 @@ type SignUpSchemaType = z.infer<typeof signUpSchema>
 
 export function SignUp() {
   const navigation = useNavigation()
+  const toast = useToast()
 
   const {
     control,
@@ -49,18 +57,22 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: SignUpSchemaType) {
     try {
-      const response = await api.post('/users', {
+      await api.post('/users', {
         name,
         email,
         password,
       })
-
-      const data = await response.data
-      console.log(data)
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        Alert.alert('Erro', error.response?.data.message)
-      }
+      const isAppError = error instanceof AppError
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível criar a conta, tente novamente mais tarde.'
+
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
     }
   }
 
