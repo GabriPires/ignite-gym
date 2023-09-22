@@ -13,12 +13,15 @@ type ExerciseCardProps = TouchableOpacityProps & {
 export function ExerciseCard({ exercise, ...props }: ExerciseCardProps) {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
-  function handleNavigateToExerciseDetails() {
-    navigation.navigate('exercise')
+  function handleNavigateToExerciseDetails(exerciseId: string) {
+    navigation.navigate('exercise', { exerciseId })
   }
 
   return (
-    <TouchableOpacity onPress={handleNavigateToExerciseDetails} {...props}>
+    <TouchableOpacity
+      onPress={() => handleNavigateToExerciseDetails(exercise.id)}
+      {...props}
+    >
       <HStack
         bg="gray.500"
         alignItems="center"
