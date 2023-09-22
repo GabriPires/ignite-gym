@@ -1,6 +1,5 @@
 import { UserDTO } from '@dtos/UserDTO'
 import { api } from '@services/api'
-import { useToast } from 'native-base'
 import { ReactNode, createContext, useContext, useState } from 'react'
 
 interface AuthContextProps {
@@ -16,25 +15,29 @@ interface AuthContextProviderProps {
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
-  const { show } = useToast()
 
   async function signIn(email: string, password: string) {
-    try {
-      const { data } = await api.post('/sessions', {
-        email,
-        password,
-      })
+    const { data } = await api.post('/sessions', {
+      email,
+      password,
+    })
 
-      if (data.user) {
-        setUser(data.user)
-      }
-    } catch (error) {
-      show({
-        title: 'Erro ao realizar login',
-        description: 'Verifique suas credenciais e tente novamente',
-        bgColor: 'red.500',
-      })
+    if (data.user) {
+      setUser(data.user)
     }
+
+    // try {
+    //   const { data } = await api.post('/sessions', {
+    //     email,
+    //     password,
+    //   })
+
+    //   if (data.user) {
+    //     setUser(data.user)
+    //   }
+    // } catch (error) {
+    //   throw error
+    // }
   }
 
   return (

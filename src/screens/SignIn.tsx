@@ -6,7 +6,16 @@ import { useAuth } from '@contexts/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
-import { Center, Heading, Image, ScrollView, Text, VStack } from 'native-base'
+import { AppError } from '@utils/AppError'
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  VStack,
+  useToast,
+} from 'native-base'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -19,9 +28,8 @@ type SignInFormProps = z.infer<typeof signInSchema>
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { user, signIn } = useAuth()
-
-  console.log(user)
+  const { signIn } = useAuth()
+  const { show } = useToast()
 
   const {
     control,
@@ -40,7 +48,19 @@ export function SignIn() {
   }
 
   async function handleSignIn(data: SignInFormProps) {
-    await signIn(data.email, data.password)
+    try {
+      await signIn(data.email, data.password)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError ? error.message : 'Erro ao realizar login'
+
+      show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    }
   }
 
   return (
