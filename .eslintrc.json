@@ -1,6 +1,8 @@
 {
-  "extends": ["@gabpires/eslint-config/react"],
+  "extends": ["@gabpires/eslint-config/react-native"],
   "rules": {
-    "camelcase": "off"
+    "camelcase": "off",
+    "react-native/no-raw-text": "off",
+    "react-native/no-inline-styles": "off"
   }
 }
