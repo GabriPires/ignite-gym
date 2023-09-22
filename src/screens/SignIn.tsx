@@ -16,6 +16,7 @@ import {
   VStack,
   useToast,
 } from 'native-base'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -27,6 +28,8 @@ const signInSchema = z.object({
 type SignInFormProps = z.infer<typeof signInSchema>
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const { signIn } = useAuth()
   const { show } = useToast()
@@ -49,6 +52,7 @@ export function SignIn() {
 
   async function handleSignIn(data: SignInFormProps) {
     try {
+      setIsLoading(true)
       await signIn(data.email, data.password)
     } catch (error) {
       const isAppError = error instanceof AppError
@@ -60,6 +64,8 @@ export function SignIn() {
         placement: 'top',
         bgColor: 'red.500',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -123,7 +129,11 @@ export function SignIn() {
             )}
           />
 
-          <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+          <Button
+            title="Acessar"
+            isLoading={isLoading}
+            onPress={handleSubmit(handleSignIn)}
+          />
         </Center>
 
         <Center mt={24}>
