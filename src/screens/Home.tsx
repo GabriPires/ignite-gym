@@ -1,8 +1,10 @@
 import { ExerciseCard } from '@components/ExerciseCard'
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
-import { FlatList, HStack, Heading, Text, VStack } from 'native-base'
-import { useState } from 'react'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
+import { FlatList, HStack, Heading, Text, VStack, useToast } from 'native-base'
+import { useEffect, useState } from 'react'
 
 export function Home() {
   const [groupSelected, setGroupSelected] = useState('costas')
@@ -15,14 +17,30 @@ export function Home() {
     'Remada na polia baixa',
     'Remada na polia com triângulo',
   ])
-  const [groups] = useState([
-    'costas',
-    'ombro',
-    'peito',
-    'biceps',
-    'triceps',
-    'perna',
-  ])
+  const [groups, setGroups] = useState<string[]>([])
+
+  const { show } = useToast()
+
+  async function fetchGroups() {
+    try {
+      const { data } = await api.get('/groups')
+
+      setGroups(data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Erro ao buscar grupos'
+
+      show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    }
+  }
+
+  useEffect(() => {
+    fetchGroups()
+  }, [])
 
   return (
     <VStack flex={1}>
