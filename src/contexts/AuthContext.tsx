@@ -1,6 +1,9 @@
 import { UserDTO } from '@dtos/UserDTO'
 import { api } from '@services/api'
-import { storageSaveAuthToken } from '@storage/storage-auth-token'
+import {
+  storageGetAuthToken,
+  storageSaveAuthToken,
+} from '@storage/storage-auth-token'
 import {
   storageGetUser,
   storageRemoveUser,
@@ -9,6 +12,7 @@ import {
 import {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -31,30 +35,37 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState(true)
 
-  async function storageUserAndToken(userData: UserDTO, token: string) {
+  async function updateUserAndToken(userData: UserDTO, token: string) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
+    setUser(userData)
+  }
+
+  async function saveUserAndTokenOnStorage(userData: UserDTO, token: string) {
     try {
-      setIsLoadingUserStorageData(true)
-
-      api.defaults.headers.common.Authorization = `Bearer ${token}`
-
       await storageSaveUser(userData)
       await storageSaveAuthToken(token)
-      setUser(userData)
     } catch (error) {
       throw error
-    } finally {
-      setIsLoadingUserStorageData(false)
     }
   }
 
   async function signIn(email: string, password: string) {
-    const { data } = await api.post('/sessions', {
-      email,
-      password,
-    })
+    try {
+      const { data } = await api.post('/sessions', {
+        email,
+        password,
+      })
 
-    if (data.user && data.token) {
-      await storageUserAndToken(data.user, data.token)
+      if (data.user && data.token) {
+        setIsLoadingUserStorageData(true)
+
+        await saveUserAndTokenOnStorage(data.user, data.token)
+        await updateUserAndToken(data.user, data.token)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoadingUserStorageData(false)
     }
   }
 
@@ -70,12 +81,15 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   }
 
-  async function loadUserData() {
+  const loadUserData = useCallback(async () => {
     try {
-      const user = await storageGetUser()
+      setIsLoadingUserStorageData(true)
 
-      if (user) {
-        setUser(user)
+      const user = await storageGetUser()
+      const token = await storageGetAuthToken()
+
+      if (token && user) {
+        updateUserAndToken(user, token)
         setIsLoadingUserStorageData(false)
       }
     } catch (error) {
@@ -83,11 +97,11 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     } finally {
       setIsLoadingUserStorageData(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     loadUserData()
-  }, [])
+  }, [loadUserData])
 
   return (
     <AuthContext.Provider
