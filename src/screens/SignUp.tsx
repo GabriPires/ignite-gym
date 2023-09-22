@@ -2,6 +2,7 @@ import backgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
+import { useAuth } from '@contexts/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigation } from '@react-navigation/native'
 import { api } from '@services/api'
@@ -15,6 +16,7 @@ import {
   VStack,
   useToast,
 } from 'native-base'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -38,8 +40,10 @@ const signUpSchema = z
 type SignUpSchemaType = z.infer<typeof signUpSchema>
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
   const navigation = useNavigation()
   const toast = useToast()
+  const { signIn } = useAuth()
 
   const {
     control,
@@ -57,11 +61,13 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: SignUpSchemaType) {
     try {
+      setIsLoading(true)
       await api.post('/users', {
         name,
         email,
         password,
       })
+      await signIn(email, password)
     } catch (error) {
       const isAppError = error instanceof AppError
       const title = isAppError
@@ -73,6 +79,8 @@ export function SignUp() {
         placement: 'top',
         bgColor: 'red.500',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -171,6 +179,7 @@ export function SignUp() {
 
           <Button
             title="Criar e acessar"
+            isLoading={isLoading}
             onPress={handleSubmit(handleSignUp)}
           />
         </Center>
