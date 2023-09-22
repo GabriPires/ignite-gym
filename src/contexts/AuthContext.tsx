@@ -2,6 +2,7 @@ import { UserDTO } from '@dtos/UserDTO'
 import { api } from '@services/api'
 import {
   storageGetAuthToken,
+  storageRemoveAuthToken,
   storageSaveAuthToken,
 } from '@storage/storage-auth-token'
 import {
@@ -72,8 +73,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   async function signOut() {
     try {
       setIsLoadingUserStorageData(true)
+
       setUser({} as UserDTO)
       await storageRemoveUser()
+      await storageRemoveAuthToken()
     } catch (error) {
       throw error
     } finally {
