@@ -1,22 +1,16 @@
 import { ExerciseCard } from '@components/ExerciseCard'
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
+import { ExerciseDTO } from '@dtos/ExerciseDTO'
+import { useFocusEffect } from '@react-navigation/native'
 import { api } from '@services/api'
 import { AppError } from '@utils/AppError'
 import { FlatList, HStack, Heading, Text, VStack, useToast } from 'native-base'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export function Home() {
   const [groupSelected, setGroupSelected] = useState('costas')
-  const [exercises] = useState([
-    'Remada unilateral',
-    'Remada curvada',
-    'Remada cavalinho',
-    'Remada na polia',
-    'Remada na polia alta',
-    'Remada na polia baixa',
-    'Remada na polia com triângulo',
-  ])
+  const [exercises, setExercises] = useState<ExerciseDTO[]>([])
   const [groups, setGroups] = useState<string[]>([])
 
   const { show } = useToast()
@@ -28,7 +22,24 @@ export function Home() {
       setGroups(data)
     } catch (error) {
       const isAppError = error instanceof AppError
-      const title = isAppError ? error.message : 'Erro ao buscar grupos'
+      const title = isAppError ? error.message : 'Erro ao carregar grupos'
+
+      show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    }
+  }
+
+  async function fetchExercisesByGroup(group: string) {
+    try {
+      const { data } = await api.get(`/exercises/bygroup/${group}`)
+
+      setExercises(data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Erro ao carregar exercícios'
 
       show({
         title,
@@ -41,6 +52,12 @@ export function Home() {
   useEffect(() => {
     fetchGroups()
   }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchExercisesByGroup(groupSelected)
+    }, [groupSelected]),
+  )
 
   return (
     <VStack flex={1}>
@@ -79,7 +96,7 @@ export function Home() {
 
         <FlatList
           data={exercises}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           _contentContainerStyle={{
             paddingBottom: 20,
