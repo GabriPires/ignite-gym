@@ -19,7 +19,9 @@ type SignInFormProps = z.infer<typeof signInSchema>
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
-  const { signIn } = useAuth()
+  const { user, signIn } = useAuth()
+
+  console.log(user)
 
   const {
     control,
@@ -37,8 +39,8 @@ export function SignIn() {
     navigation.navigate('signUp')
   }
 
-  function handleSignIn(data: SignInFormProps) {
-    signIn(data.email, data.password)
+  async function handleSignIn(data: SignInFormProps) {
+    await signIn(data.email, data.password)
   }
 
   return (

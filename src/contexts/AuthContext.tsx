@@ -1,9 +1,11 @@
 import { UserDTO } from '@dtos/UserDTO'
+import { api } from '@services/api'
+import { useToast } from 'native-base'
 import { ReactNode, createContext, useContext, useState } from 'react'
 
 interface AuthContextProps {
   user: UserDTO
-  signIn: (email: string, password: string) => void
+  signIn: (email: string, password: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
@@ -13,20 +15,26 @@ interface AuthContextProviderProps {
 }
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const [user, setUser] = useState<UserDTO>({
-    id: '1',
-    name: 'Gabriel Pires',
-    email: 'gabriel@email.com',
-    avatar: 'https://github.com/GabriPires.png',
-  })
+  const [user, setUser] = useState<UserDTO>({} as UserDTO)
+  const { show } = useToast()
 
-  function signIn(email: string, password: string) {
-    setUser({
-      id: '1',
-      name: 'Gabriel Pires',
-      email,
-      avatar: '',
-    })
+  async function signIn(email: string, password: string) {
+    try {
+      const { data } = await api.post('/sessions', {
+        email,
+        password,
+      })
+
+      if (data.user) {
+        setUser(data.user)
+      }
+    } catch (error) {
+      show({
+        title: 'Erro ao realizar login',
+        description: 'Verifique suas credenciais e tente novamente',
+        bgColor: 'red.500',
+      })
+    }
   }
 
   return (
