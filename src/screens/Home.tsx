@@ -101,7 +101,7 @@ export function Home() {
           _contentContainerStyle={{
             paddingBottom: 20,
           }}
-          renderItem={() => <ExerciseCard />}
+          renderItem={({ item }) => <ExerciseCard exercise={item} />}
         />
       </VStack>
     </VStack>
