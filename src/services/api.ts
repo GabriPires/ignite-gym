@@ -68,7 +68,10 @@ api.registerInterceptTokenManager = (signOut) => {
                 refresh_token: data.refresh_token,
               })
 
-              if (originalRequestConfig.data) {
+              if (
+                originalRequestConfig.data &&
+                !(originalRequestConfig.data instanceof FormData)
+              ) {
                 originalRequestConfig.data = JSON.parse(
                   originalRequestConfig.data,
                 )

@@ -142,9 +142,9 @@ export function Profile() {
           },
         })
 
-        const userToUpdate = user
+        const userToUpdate = { ...user }
         userToUpdate.avatar = data.avatar
-        updateUserProfile(userToUpdate)
+        await updateUserProfile(userToUpdate)
 
         show({
           title: 'Foto de perfil atualizada!',
