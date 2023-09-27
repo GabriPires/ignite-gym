@@ -1,3 +1,4 @@
+import DefaultUserPhoto from '@assets/userPhotoDefault.png'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
@@ -48,9 +49,6 @@ type FormData = z.infer<typeof formDataSchema>
 export function Profile() {
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
-  const [userPhoto, setUserPhoto] = useState(
-    'https://github.com/GabriPires.png',
-  )
 
   const { user, updateUserProfile } = useAuth()
   const { show } = useToast()
@@ -177,7 +175,11 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}avatar/${user.avatar}` }
+                  : DefaultUserPhoto
+              }
               alt="Foto do usuário"
               size={photoSize}
             />
