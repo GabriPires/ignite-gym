@@ -52,8 +52,7 @@ export function Profile() {
     'https://github.com/GabriPires.png',
   )
 
-  const { user } = useAuth()
-
+  const { user, updateUserProfile } = useAuth()
   const { show } = useToast()
 
   const {
@@ -75,7 +74,12 @@ export function Profile() {
     try {
       setIsUpdatingProfile(true)
 
+      const userToUpdate = user
+
       await api.put('/users', data)
+      userToUpdate.name = data.name
+
+      await updateUserProfile(userToUpdate)
 
       show({
         title: 'Perfil atualizado com sucesso!',
