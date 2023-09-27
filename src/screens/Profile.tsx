@@ -4,6 +4,8 @@ import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { useAuth } from '@contexts/AuthContext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { Center, Heading, Skeleton, Text, VStack, useToast } from 'native-base'
@@ -44,6 +46,7 @@ const formDataSchema = z
 type FormData = z.infer<typeof formDataSchema>
 
 export function Profile() {
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
   const [userPhoto, setUserPhoto] = useState(
     'https://github.com/GabriPires.png',
@@ -56,7 +59,7 @@ export function Profile() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormData>({
     resolver: zodResolver(formDataSchema),
     defaultValues: {
@@ -69,7 +72,28 @@ export function Profile() {
   })
 
   async function handleUpdateProfile(data: FormData) {
-    console.log(data)
+    try {
+      setIsUpdatingProfile(true)
+
+      await api.put('/users', data)
+
+      show({
+        title: 'Perfil atualizado com sucesso!',
+        placement: 'top',
+        bgColor: 'green.700',
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Erro ao atualizar perfil'
+
+      show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    } finally {
+      setIsUpdatingProfile(false)
+    }
   }
 
   async function handleSelectUserPhoto() {
@@ -224,6 +248,8 @@ export function Profile() {
           <Button
             title="Atualizar"
             mt={4}
+            isDisabled={!isDirty}
+            isLoading={isUpdatingProfile}
             onPress={handleSubmit(handleUpdateProfile)}
           />
         </Center>
