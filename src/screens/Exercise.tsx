@@ -34,6 +34,7 @@ interface RouteParamsProps {
 export function Exercise() {
   const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO)
   const [isLoading, setIsLoading] = useState(true)
+  const [submittingHistory, setSubmittingHistory] = useState(false)
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const route = useRoute()
@@ -65,6 +66,37 @@ export function Exercise() {
 
   function handleGoBack() {
     navigation.goBack()
+  }
+
+  async function handleRegisterExerciseHistory() {
+    try {
+      setSubmittingHistory(true)
+
+      await api.post('/history', {
+        exercise_id: exerciseId,
+      })
+
+      show({
+        title: 'Exercício registrado em seu histórico',
+        placement: 'top',
+        bgColor: 'green.700',
+      })
+
+      navigation.navigate('history')
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível registrar o exercício'
+
+      show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500',
+      })
+    } finally {
+      setSubmittingHistory(false)
+    }
   }
 
   useFocusEffect(
@@ -144,7 +176,11 @@ export function Exercise() {
               </HStack>
             </HStack>
 
-            <Button title="Marcar como realizado" />
+            <Button
+              title="Marcar como realizado"
+              isLoading={submittingHistory}
+              onPress={handleRegisterExerciseHistory}
+            />
           </Box>
         </VStack>
       </ScrollView>

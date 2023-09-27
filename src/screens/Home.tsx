@@ -20,7 +20,7 @@ import { useCallback, useEffect, useState } from 'react'
 export function Home() {
   const [isLoadingExercises, setIsLoadingExercises] = useState(true)
   const [isLoadingGroups, setIsLoadingGroups] = useState(true)
-  const [groupSelected, setGroupSelected] = useState('costas')
+  const [groupSelected, setGroupSelected] = useState('antebraço')
   const [exercises, setExercises] = useState<ExerciseDTO[]>([])
   const [groups, setGroups] = useState<string[]>([])
 
