@@ -14,10 +14,25 @@ import { z } from 'zod'
 
 const photoSize = 33
 
-const formDataSchema = z.object({
-  name: z.string().nonempty({ message: 'O nome não pode ser vazio' }),
-  email: z.string().email({ message: 'E-mail inválido' }),
-})
+const formDataSchema = z
+  .object({
+    name: z.string().min(1, 'O nome não pode ser vazio'),
+    email: z.string(),
+    old_password: z.string().min(1, 'Senha antiga não pode ser vazia'),
+    password: z.string().min(1, 'Senha não pode ser vazia'),
+    password_confirmation: z
+      .string()
+      .min(1, 'Confirmação de senha não pode ser vazia'),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.password_confirmation) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Senhas não conferem',
+        path: ['password_confirmation'],
+      })
+    }
+  })
 
 type FormData = z.infer<typeof formDataSchema>
 
@@ -40,8 +55,15 @@ export function Profile() {
     defaultValues: {
       name: user.name,
       email: user.email,
+      old_password: '',
+      password: '',
+      password_confirmation: '',
     },
   })
+
+  async function handleUpdateProfile(data: FormData) {
+    console.log(data)
+  }
 
   async function handleSelectUserPhoto() {
     setPhotoIsLoading(true)
@@ -120,8 +142,8 @@ export function Profile() {
               <Input
                 placeholder="Nome"
                 bg="gray.600"
-                mb={4}
                 value={value}
+                errorMessage={errors.name?.message}
                 onChangeText={onChange}
               />
             )}
@@ -136,6 +158,7 @@ export function Profile() {
                 bg="gray.600"
                 isDisabled
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
@@ -151,26 +174,51 @@ export function Profile() {
             Alterar senha
           </Heading>
 
-          <Input
-            placeholder="Senha antiga"
-            secureTextEntry
-            bg="gray.600"
-            mb={4}
+          <Controller
+            control={control}
+            name="old_password"
+            render={({ field: { onChange } }) => (
+              <Input
+                placeholder="Senha antiga"
+                secureTextEntry
+                bg="gray.600"
+                errorMessage={errors.old_password?.message}
+                onChangeText={onChange}
+              />
+            )}
           />
-          <Input
-            placeholder="Nova senha"
-            secureTextEntry
-            bg="gray.600"
-            mb={4}
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange } }) => (
+              <Input
+                placeholder="Nova senha"
+                secureTextEntry
+                bg="gray.600"
+                errorMessage={errors.password?.message}
+                onChangeText={onChange}
+              />
+            )}
           />
-          <Input
-            placeholder="Confirme a nova senha"
-            secureTextEntry
-            bg="gray.600"
-            mb={4}
+          <Controller
+            control={control}
+            name="password_confirmation"
+            render={({ field: { onChange } }) => (
+              <Input
+                placeholder="Confirme a nova senha"
+                secureTextEntry
+                bg="gray.600"
+                errorMessage={errors.password_confirmation?.message}
+                onChangeText={onChange}
+              />
+            )}
           />
 
-          <Button title="Atualizar" mt={4} />
+          <Button
+            title="Atualizar"
+            mt={4}
+            onPress={handleSubmit(handleUpdateProfile)}
+          />
         </Center>
       </ScrollView>
     </VStack>
