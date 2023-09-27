@@ -127,7 +127,32 @@ export function Profile() {
           })
         }
 
-        setUserPhoto(selectedPhoto.assets[0].uri)
+        const fileExtension = selectedPhoto.assets[0].uri.split('.').pop()
+
+        const photoFile = {
+          name: `${user.id}.${fileExtension}`.toLowerCase(),
+          uri: selectedPhoto.assets[0].uri,
+          type: `${selectedPhoto.assets[0].type}/${fileExtension}`,
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+        userPhotoUploadForm.append('avatar', photoFile)
+
+        const { data } = await api.patch('/users/avatar', userPhotoUploadForm, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+
+        const userToUpdate = user
+        userToUpdate.avatar = data.avatar
+        updateUserProfile(userToUpdate)
+
+        show({
+          title: 'Foto de perfil atualizada!',
+          bgColor: 'green.700',
+          placement: 'top',
+        })
       }
     } catch (error) {
       console.log(error)
