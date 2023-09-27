@@ -18,20 +18,27 @@ const formDataSchema = z
   .object({
     name: z.string().min(1, 'O nome não pode ser vazio'),
     email: z.string(),
-    old_password: z.string().min(1, 'Senha antiga não pode ser vazia'),
-    password: z.string().min(1, 'Senha não pode ser vazia'),
-    password_confirmation: z
+    old_password: z
+      .optional(z.string())
+      .transform((value) => (value === '' ? null : value)),
+    password: z
       .string()
-      .min(1, 'Confirmação de senha não pode ser vazia'),
+      .min(6, 'A senha deve ter no mínimo 6 caracteres')
+      .or(z.literal('')),
+    password_confirmation: z.string().or(z.literal('')),
   })
   .superRefine((data, ctx) => {
-    if (data.password !== data.password_confirmation) {
+    const { password, password_confirmation } = data
+
+    if (password !== password_confirmation) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Senhas não conferem',
         path: ['password_confirmation'],
       })
     }
+
+    return data
   })
 
 type FormData = z.infer<typeof formDataSchema>
